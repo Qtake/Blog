@@ -1,0 +1,27 @@
+﻿@using Blog.Service.DTOs
+@{
+}
+
+@model UserRequest
+
+<form method="post" asp-action="LogIn" asp-controller="User">
+    <div asp-validation-summary="All" class="text-danger">
+
+    </div>
+
+    <label asp-for="Name" class="form-label">@Html.LabelFor(x => x.Name)</label>
+    <input asp-for="Name" class="form-control" />
+
+    <label asp-for="Password" class="form-label">@Html.LabelFor(x => x.Password)</label>
+    <input asp-for="Password" type="password" class="form-control" />
+
+    <input type="submit" value="Submit" class="btn btn-primary mt-3" />
+</form>
+
+<div>
+    <ul>
+        <li>
+            <a asp-controller="User" asp-action="Registration">Registration</a>
+        </li>
+    </ul>
+</div>
