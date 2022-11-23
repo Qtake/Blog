@@ -12,7 +12,7 @@ namespace Blog.Infrastructure.Contexts
 
         public BlogContext(DbContextOptions<BlogContext> options) : base(options)
         {
-            Database.EnsureDeleted();
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 

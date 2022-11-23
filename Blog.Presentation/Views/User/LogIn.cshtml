@@ -1,8 +1,9 @@
 ﻿@using Blog.Service.DTOs
+@using Blog.Service.Models;
 @{
 }
 
-@model UserRequest
+@model AuthorizationModel
 
 <form method="post" asp-action="LogIn" asp-controller="User">
     <div asp-validation-summary="All" class="text-danger">

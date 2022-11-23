@@ -1,5 +1,5 @@
 ﻿using Blog.Service.DTOs;
-using System.Linq.Expressions;
+using Blog.Service.Models;
 
 namespace Blog.Service.Services.Interfaces
 {
@@ -7,8 +7,8 @@ namespace Blog.Service.Services.Interfaces
     {
         Task<UserResponse?> GetByEmailAsync(string email);
         Task Authenticate(UserRequest request);
-        Task<bool> Registration(UserRequest request);
-        Task<bool> LogIn(UserRequest request);
+        Task<bool> Registration(RegistrationModel model);
+        Task<bool> LogIn(AuthorizationModel model);
         Task LogOut();
     }
 }
