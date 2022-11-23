@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Blog.Domain.Entities;
 using Blog.Service.DTOs;
+using Blog.Service.Extensions;
 using Blog.Service.Repositories;
 using Blog.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using System.Linq.Expressions;
 using System.Security.Claims;
 
 namespace Blog.Service.Services
@@ -41,11 +43,34 @@ namespace Blog.Service.Services
                 new ClaimsPrincipal(id));
         }
 
-        public async Task Registration(UserRequest request)
+        public async Task<bool> Registration(UserRequest request)
         {
+            bool isExist = await _repository.Exist(x => x.Name == request.Name && x.Email == request.Email);
+
+            if (isExist)
+            {
+                return false;
+            }
+
             await AddAsync(request);
             await Authenticate(request);
 
+            return true;
+
+        }
+
+        public async Task<bool> LogIn(UserRequest request)
+        {
+            bool isExist = await _repository.Exist(x => x.Email == x.Email && x.Password == request.Password);
+
+            if (!isExist)
+            {
+                return false;
+            }
+
+            await Authenticate(request);
+
+            return true;
         }
 
         public async Task LogOut()

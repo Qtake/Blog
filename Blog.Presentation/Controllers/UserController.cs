@@ -8,6 +8,7 @@ namespace Blog.Presentation.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _service;
+        private const string ControllerName = "/User";
 
         public UserController(IUserService service)
         {
@@ -16,7 +17,8 @@ namespace Blog.Presentation.Controllers
 
         public IActionResult Index()
         {
-            return RedirectToAction(nameof(LogIn), nameof(UserController).Replace(nameof(Controller), string.Empty));
+            //return RedirectToAction(nameof(LogIn), nameof(UserController).Replace(nameof(Controller), string.Empty));
+            return RedirectToAction(nameof(LogIn), ControllerName);
         }
 
         [HttpGet("[controller]/[action]")]
@@ -37,38 +39,33 @@ namespace Blog.Presentation.Controllers
         {
             if (ModelState.IsValid)
             {
-                UserResponse? entity = await _service.GetByEmailAsync(request.Email);
+                bool isRegistered = await _service.Registration(request);
 
-                if (entity == null)
+                if (isRegistered)
                 {
-                    // registration
                     return Redirect("~/");
                 }
-                else
-                {
-                    ModelState.AddModelError("", "Некорректные логин и(или) пароль");
-                }
+                    
+                ModelState.AddModelError("", "User with that email or Name already exist");
             }
 
             return View(request);
         }
 
-        [HttpPost("/User")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogIn(UserRequest request)
         {
             if (ModelState.IsValid)
             {
-                UserResponse? user = await _service.GetByEmailAsync(request.Email);
+                bool isLogin = await _service.LogIn(request);
 
-                if (user != null)
+                if (isLogin)
                 {
-                    await _service.Authenticate(request);
-
                     return Redirect("~/");
                 }
 
-                ModelState.AddModelError("", "Lox");
+                ModelState.AddModelError("", "Invalid Email or Password");
             }
 
             return View(request);
