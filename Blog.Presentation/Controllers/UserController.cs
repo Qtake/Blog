@@ -33,25 +33,6 @@ namespace Blog.Presentation.Controllers
             return View();
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Registration(UserRequest request)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        bool isRegistered = await _service.Registration(request);
-
-        //        if (isRegistered)
-        //        {
-        //            return Redirect("~/");
-        //        }
-                    
-        //        ModelState.AddModelError("", "User with that email or Name already exist");
-        //    }
-
-        //    return View(request);
-        //}
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Registration(RegistrationModel model)

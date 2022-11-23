@@ -1,8 +1,19 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using Blog.Service.DTOs
+@{
+    string[] names = { "Debik", "Raul", "Arman" };
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@model IEnumerable<ArticleResponse>
+
+<div>
+    <ul>
+        @foreach (var article in names)
+        {
+            <li>
+                <p>article</p>
+            </li>
+        }
+
+    </ul>
+
 </div>
