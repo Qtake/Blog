@@ -8,7 +8,6 @@ namespace Blog.Presentation.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IArticleService _service;
-        public IEnumerable<ArticleResponse> Articles { get; set; } = null!;
 
         public HomeController(ILogger<HomeController> logger, IArticleService service)
         {
@@ -16,9 +15,11 @@ namespace Blog.Presentation.Controllers
             _service = service;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            IEnumerable<ArticleResponse> articles = await _service.GetAllAsync();
+
+            return View(articles.ToList());
         }
 
         public IActionResult Privacy()
@@ -26,19 +27,23 @@ namespace Blog.Presentation.Controllers
             return View();
         }
 
-        public async Task<IActionResult> GetAllArticlesAsync()
+        public IActionResult CreateArticle()
         {
-            IEnumerable<ArticleResponse> articles = await _service.GetAllAsync();
-            Articles = articles.ToList();
-
             return View();
         }
 
-        public async Task<IActionResult> CreateArticleAsync()
+        [HttpPost]
+        public async Task<IActionResult> AddAsync(ArticleRequest request)
         {
+            string? userName = User.Identity.Name;
 
+            ArticleResponse? response = await _service.GetUserByName(userName);
 
-            return View();
+            request.UserID = response.UserID;
+
+            await _service.AddAsync(request);
+
+            return Redirect("~/");
         }
     }
 }

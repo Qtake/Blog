@@ -19,13 +19,12 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-
                     @if (User.Identity == null || !User.Identity.IsAuthenticated)
                     {
                         <ul class="navbar-nav flex-grow-1 d-flex">
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="User" asp-action="LogIn">LogIn</a>
-                                </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="User" asp-action="LogIn">LogIn</a>
+                            </li>
                         </ul>
                     }
                     else

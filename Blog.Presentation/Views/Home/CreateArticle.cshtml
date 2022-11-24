@@ -1,0 +1,19 @@
+﻿@using Blog.Service.DTOs;
+@{
+}
+
+@model ArticleRequest
+
+<form method="post" asp-action="Add" asp-controller="Home">
+    <div asp-validation-summary="All" class="text-danger">
+
+    </div>
+
+    <label asp-for="Name" class="form-label">@Html.LabelFor(x => x.Name)</label>
+    <input asp-for="Name" class="form-control" />
+
+    <label asp-for="Content" class="form-label">@Html.LabelFor(x => x.Content)</label>
+    <textarea asp-for="Content" class="form-control"></textarea>
+
+    <input type="submit" value="Submit" class="btn btn-primary mt-3" />
+</form>

@@ -1,19 +1,29 @@
 ﻿@using Blog.Service.DTOs
 @{
-    string[] names = { "Debik", "Raul", "Arman" };
 }
 
 @model IEnumerable<ArticleResponse>
 
 <div>
     <ul>
-        @foreach (var article in names)
+        @foreach (var article in Model)
         {
             <li>
-                <p>article</p>
+                <p>@article.Name</p>
+                <p>@article.Content</p>
             </li>
         }
-
     </ul>
-
 </div>
+
+@if (User.Identity is not null && User.Identity.IsAuthenticated)
+{
+    <div>
+        <a asp-controller="Home"
+           asp-action="CreateArticle"
+           class="btn btn-secondary mt-3">
+            <div>Create article</div>
+        </a>
+    </div>
+}
+

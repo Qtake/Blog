@@ -2,7 +2,7 @@
 
 namespace Blog.Service.Models
 {
-    public class AuthorizationModel
+    public sealed class AuthorizationModel
     {
         [MinLength(6)]
         [MaxLength(20)]

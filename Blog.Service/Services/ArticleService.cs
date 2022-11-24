@@ -45,31 +45,43 @@ namespace Blog.Service.Services
 
         public async Task<bool> UpdateAsync(Guid id, ArticleRequest request)
         {
-            try
-            {
-                Article entity = _mapper.Map<Article>(request);
-                await _repository.UpdateAsync(id, entity);
+            bool isExist = await _repository.Exist(x => x.ID == id);
 
-                return true;
-            }
-            catch
+            if (!isExist)
             {
                 return false;
             }
+
+            Article entity = _mapper.Map<Article>(request);
+            await _repository.UpdateAsync(id, entity);
+
+            return true;
         }
 
         public async Task<bool> RemoveAsync(Guid id)
         {
-            try
-            {
-                await _repository.RemoveAsync(id);
+            bool isExist = await _repository.Exist(x => x.ID == id);
 
-                return true;
-            }
-            catch
+            if (!isExist)
             {
                 return false;
             }
+
+            await _repository.RemoveAsync(id);
+
+            return true;
+        }
+
+        public async Task<ArticleResponse?> GetUserByName(string name)
+        {
+            Article? entity = await _repository.GetAsync(x => x.User.Name == name);
+
+            if (entity is null)
+            {
+                return null;
+            }
+
+            return _mapper.Map<ArticleResponse>(entity);
         }
     }
 }

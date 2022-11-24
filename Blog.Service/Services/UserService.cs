@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Blog.Domain.Entities;
 using Blog.Service.DTOs;
-using Blog.Service.Extensions;
 using Blog.Service.Models;
 using Blog.Service.Repositories;
 using Blog.Service.Services.Interfaces;

@@ -2,7 +2,7 @@
 
 namespace Blog.Service.Models
 {
-    public class RegistrationModel
+    public sealed class RegistrationModel
     {
         [MinLength(6)]
         [MaxLength(20)]

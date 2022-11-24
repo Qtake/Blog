@@ -8,5 +8,6 @@
         public User User { get; set; } = null!;
 
         public ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
+        public ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
     }
 }
