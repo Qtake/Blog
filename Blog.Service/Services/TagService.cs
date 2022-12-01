@@ -17,9 +17,9 @@ namespace Blog.Service.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<TagResponse>> GetAllAsync()
+        public async Task<IQueryable<TagResponse>> GetAllAsync()
         {
-            IEnumerable<Tag> list = await _repository.GetAllAsync();
+            IQueryable<Tag> list = await _repository.GetAllAsync();
 
             return list.Select(x => _mapper.Map<TagResponse>(x));
         }

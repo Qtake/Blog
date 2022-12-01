@@ -17,7 +17,7 @@ namespace Blog.Presentation.Controllers
 
         public async Task<IActionResult> Index()
         {
-            IEnumerable<ArticleResponse> articles = await _service.GetAllAsync();
+            IQueryable<ArticleResponse> articles = await _service.GetAllAsync();
 
             return View(articles.ToList());
         }
@@ -35,13 +35,27 @@ namespace Blog.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> AddAsync(ArticleRequest request)
         {
-            string? userName = User.Identity.Name;
+            string? name = User.Identity.Name;
 
-            ArticleResponse? response = await _service.GetUserByName(userName);
+            if (name is not null)
+            {
+                ArticleResponse? response = await _service.GetUserByName(name);
 
-            request.UserID = response.UserID;
+                if (response is not null)
+                {
+                    request.UserID = response.UserID;
 
-            await _service.AddAsync(request);
+                    await _service.AddAsync(request);
+                }
+            }
+
+            return Redirect("~/");
+        }
+
+        public async Task<IActionResult> RemoveAsync(Guid id)
+        {
+
+            await _service.RemoveAsync(id);
 
             return Redirect("~/");
         }

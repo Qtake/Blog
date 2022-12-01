@@ -4,7 +4,7 @@ namespace Blog.Service.Repositories
 {
     public interface IBaseRepository<TEntity> where TEntity : class
     {
-        Task<IEnumerable<TEntity>> GetAllAsync();
+        Task<IQueryable<TEntity>> GetAllAsync();
         Task<TEntity?> GetAsync(Guid id);
         Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate);
         Task<Guid> AddAsync(TEntity entity);

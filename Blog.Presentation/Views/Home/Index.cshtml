@@ -11,6 +11,15 @@
             <li>
                 <p>@article.Name</p>
                 <p>@article.Content</p>
+
+                @if (User.Identity is not null && User.Identity.Name == article.User.Name)
+                {
+                    <a asp-controller="Comment"
+                       asp-action="RemoveComment"
+                       class="btn btn-danger mt-3">
+                    </a>
+                }
+
             </li>
         }
     </ul>

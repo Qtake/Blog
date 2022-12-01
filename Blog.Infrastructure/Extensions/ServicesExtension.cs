@@ -11,7 +11,7 @@ namespace Blog.Infrastructure.Extensions
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            string connection = configuration.GetConnectionString("Default");
+            string connection = configuration.GetConnectionString("Default") ?? "Default";
 
             services.AddDbContext<BlogContext>(x => x.UseSqlServer(connection));
             services.AddRepositoryDependensies();

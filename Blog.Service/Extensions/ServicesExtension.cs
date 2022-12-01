@@ -21,7 +21,7 @@ namespace Blog.Service.Extensions
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<ITagService, TagService>();
             services.AddScoped<IUserService, UserService>();
-            
+
 
             return services;
         }

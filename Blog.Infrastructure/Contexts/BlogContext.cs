@@ -1,4 +1,6 @@
 ﻿using Blog.Domain.Entities;
+using Blog.Domain.EntityConfigs;
+using Blog.Infrastructure.EntityConfigs;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Infrastructure.Contexts
@@ -12,7 +14,7 @@ namespace Blog.Infrastructure.Contexts
 
         public BlogContext(DbContextOptions<BlogContext> options) : base(options)
         {
-            //Database.EnsureDeleted();
+            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
@@ -20,23 +22,9 @@ namespace Blog.Infrastructure.Contexts
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Article>()
-                .HasOne(x => x.User)
-                .WithMany(x => x.Articles)
-                .HasForeignKey(x => x.UserID)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_Article_User");
-
-            modelBuilder.Entity<Comment>()
-                .HasOne(x => x.User)
-                .WithMany(x => x.Comments)
-                .HasForeignKey(x => x.UserID)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_Comment_User");
-
-            modelBuilder.Entity<Article>()
-                .HasMany(x => x.Tags)
-                .WithMany(x => x.Articles);
+            modelBuilder.ApplyConfiguration(new ArticleConfig());
+            modelBuilder.ApplyConfiguration(new CommentConfig());
+            modelBuilder.ApplyConfiguration(new UserConfig());
         }
     }
 }

@@ -17,9 +17,9 @@ namespace Blog.Service.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<CommentResponse>> GetAllAsync()
+        public async Task<IQueryable<CommentResponse>> GetAllAsync()
         {
-            IEnumerable<Comment> list = await _repository.GetAllAsync();
+            IQueryable<Comment> list = await _repository.GetAllAsync();
 
             return list.Select(x => _mapper.Map<CommentResponse>(x));
         }

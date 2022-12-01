@@ -36,7 +36,7 @@ namespace Blog.Service.Services
                 "ApplicationCookie",
                 ClaimsIdentity.DefaultNameClaimType,
                 ClaimsIdentity.DefaultRoleClaimType);
-            
+
             await _contextAccessor.HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(id));
@@ -81,9 +81,9 @@ namespace Blog.Service.Services
             await _contextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
 
-        public async Task<IEnumerable<UserResponse>> GetAllAsync()
+        public async Task<IQueryable<UserResponse>> GetAllAsync()
         {
-            IEnumerable<User> list = await _repository.GetAllAsync();
+            IQueryable<User> list = await _repository.GetAllAsync();
 
             return list.Select(x => _mapper.Map<UserResponse>(x));
         }

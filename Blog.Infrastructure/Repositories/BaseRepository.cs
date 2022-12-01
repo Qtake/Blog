@@ -16,9 +16,9 @@ namespace Blog.Infrastructure.Repositories
             _entitySet = _context.Set<TEntity>();
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync()
+        public Task<IQueryable<TEntity>> GetAllAsync()
         {
-            return await _entitySet.ToListAsync();
+            return Task.FromResult(_entitySet.AsQueryable());
         }
 
         public async Task<TEntity?> GetAsync(Guid id)

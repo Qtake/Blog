@@ -3,6 +3,7 @@ using Blog.Domain.Entities;
 using Blog.Service.DTOs;
 using Blog.Service.Repositories;
 using Blog.Service.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Service.Services
 {
@@ -17,9 +18,9 @@ namespace Blog.Service.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<ArticleResponse>> GetAllAsync()
+        public async Task<IQueryable<ArticleResponse>> GetAllAsync()
         {
-            IEnumerable<Article> list = await _repository.GetAllAsync();
+            IQueryable<Article> list = (await _repository.GetAllAsync()).Include(x => x.User);
 
             return list.Select(x => _mapper.Map<ArticleResponse>(x));
         }
