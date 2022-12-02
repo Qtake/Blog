@@ -72,17 +72,5 @@ namespace Blog.Service.Services
 
             return true;
         }
-
-        public async Task<ArticleResponse?> GetUserByName(string name)
-        {
-            Article? entity = await _repository.GetAsync(x => x.User.Name == name);
-
-            if (entity is null)
-            {
-                return null;
-            }
-
-            return _mapper.Map<ArticleResponse>(entity);
-        }
     }
 }

@@ -2,6 +2,7 @@
 using Blog.Domain.EntityConfigs;
 using Blog.Infrastructure.EntityConfigs;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace Blog.Infrastructure.Contexts
 {
@@ -11,10 +12,11 @@ namespace Blog.Infrastructure.Contexts
         public DbSet<Comment> Comments { get; set; } = null!;
         public DbSet<Tag> Tags { get; set; } = null!;
         public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Role> Roles { get; set; } = null!;
 
         public BlogContext(DbContextOptions<BlogContext> options) : base(options)
         {
-            Database.EnsureDeleted();
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
@@ -22,9 +24,7 @@ namespace Blog.Infrastructure.Contexts
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfiguration(new ArticleConfig());
-            modelBuilder.ApplyConfiguration(new CommentConfig());
-            modelBuilder.ApplyConfiguration(new UserConfig());
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }
 }

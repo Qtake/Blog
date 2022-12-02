@@ -1,3 +1,4 @@
+using Blog.Infrastructure.Extensions;
 using Blog.Presentation.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
@@ -27,6 +28,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseInfrastructure();
 
 app.MapControllerRoute(
     name: "default",

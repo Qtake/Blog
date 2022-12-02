@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Blog.Domain.Entities;
+using Blog.Domain.Enums;
 using Blog.Service.DTOs;
 using Blog.Service.Models;
 using Blog.Service.Repositories;
@@ -13,15 +14,22 @@ namespace Blog.Service.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _repository;
+        private readonly IUserRepository _userRepository;
+        private readonly IRoleRepository _roleRepository;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _contextAccessor;
 
-        public UserService(IUserRepository repository, IMapper mapper, IHttpContextAccessor contextAccessor)
+        public UserService(
+            IUserRepository userRepository,
+            IRoleRepository roleRepository,
+            IMapper mapper,
+            IHttpContextAccessor contextAccessor
+            )
         {
-            _repository = repository;
+            _userRepository = userRepository;
             _mapper = mapper;
             _contextAccessor = contextAccessor;
+            _roleRepository = roleRepository;
         }
 
         public async Task Authenticate(UserRequest request)
@@ -46,7 +54,7 @@ namespace Blog.Service.Services
         {
             UserRequest request = _mapper.Map<UserRequest>(model);
 
-            bool isExist = await _repository.Exist(x => x.Name == request.Name && x.Email == request.Email);
+            bool isExist = await _userRepository.Exist(x => x.Name == request.Name && x.Email == request.Email);
 
             if (isExist)
             {
@@ -64,7 +72,7 @@ namespace Blog.Service.Services
         {
             UserRequest request = _mapper.Map<UserRequest>(model);
 
-            bool isExist = await _repository.Exist(x => x.Email == x.Email && x.Password == request.Password);
+            bool isExist = await _userRepository.Exist(x => x.Email == x.Email && x.Password == request.Password);
 
             if (!isExist)
             {
@@ -83,14 +91,14 @@ namespace Blog.Service.Services
 
         public async Task<IQueryable<UserResponse>> GetAllAsync()
         {
-            IQueryable<User> list = await _repository.GetAllAsync();
+            IQueryable<User> list = await _userRepository.GetAllAsync();
 
             return list.Select(x => _mapper.Map<UserResponse>(x));
         }
 
         public async Task<UserResponse?> GetAsync(Guid id)
         {
-            User? entity = await _repository.GetAsync(id);
+            User? entity = await _userRepository.GetAsync(id);
 
             if (entity is null)
             {
@@ -102,7 +110,19 @@ namespace Blog.Service.Services
 
         public async Task<UserResponse?> GetByEmailAsync(string email)
         {
-            User? entity = await _repository.GetAsync(x => x.Email == email);
+            User? entity = await _userRepository.GetAsync(x => x.Email == email);
+
+            if (entity is null)
+            {
+                return null;
+            }
+
+            return _mapper.Map<UserResponse>(entity);
+        }
+
+        public async Task<UserResponse?> GetByNameAsync(string name)
+        {
+            User? entity = await _userRepository.GetAsync(x => x.Name == name);
 
             if (entity is null)
             {
@@ -115,37 +135,37 @@ namespace Blog.Service.Services
         public async Task<Guid> AddAsync(UserRequest request)
         {
             User entity = _mapper.Map<User>(request);
+            Role role = await _roleRepository.GetAsync(RoleTypeEnum.User);
+            entity.Role = role;
 
-            return await _repository.AddAsync(entity);
+            return await _userRepository.AddAsync(entity);
         }
 
         public async Task<bool> UpdateAsync(Guid id, UserRequest request)
         {
-            try
-            {
-                User entity = _mapper.Map<User>(request);
-                await _repository.UpdateAsync(id, entity);
+            bool isExist = await _userRepository.Exist(x => x.ID == id);
 
-                return true;
-            }
-            catch
+            if (!isExist)
             {
                 return false;
             }
+
+            User entity = _mapper.Map<User>(request);
+            await _userRepository.UpdateAsync(id, entity);
+
+            return true;
         }
 
         public async Task<bool> RemoveAsync(Guid id)
         {
-            try
-            {
-                await _repository.RemoveAsync(id);
+            bool isExist = await _userRepository.Exist(x => x.ID == id);
 
-                return true;
-            }
-            catch
+            if (!isExist)
             {
                 return false;
             }
+
+            return true;
         }
     }
 }

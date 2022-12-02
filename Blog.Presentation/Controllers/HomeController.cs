@@ -1,5 +1,6 @@
 ﻿using Blog.Service.DTOs;
 using Blog.Service.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Presentation.Controllers
@@ -7,17 +8,19 @@ namespace Blog.Presentation.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IArticleService _service;
+        private readonly IArticleService _articleService;
+        private readonly IUserService _userService;
 
-        public HomeController(ILogger<HomeController> logger, IArticleService service)
+        public HomeController(ILogger<HomeController> logger, IArticleService service, IUserService userService)
         {
             _logger = logger;
-            _service = service;
+            _articleService = service;
+            _userService = userService;
         }
 
         public async Task<IActionResult> Index()
         {
-            IQueryable<ArticleResponse> articles = await _service.GetAllAsync();
+            IQueryable<ArticleResponse> articles = await _articleService.GetAllAsync();
 
             return View(articles.ToList());
         }
@@ -27,27 +30,27 @@ namespace Blog.Presentation.Controllers
             return View();
         }
 
+        [HttpGet]
         public IActionResult CreateArticle()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAsync(ArticleRequest request)
+        [Authorize]
+        public async Task<IActionResult> CreateArticle(ArticleRequest request)
         {
-            string? name = User.Identity.Name;
+            string name = User.Identity!.Name!;
+            UserResponse? user = await _userService.GetByNameAsync(name);
 
-            if (name is not null)
+            if (user is null)
             {
-                ArticleResponse? response = await _service.GetUserByName(name);
-
-                if (response is not null)
-                {
-                    request.UserID = response.UserID;
-
-                    await _service.AddAsync(request);
-                }
+                ModelState.AddModelError("NotAuthorized", "Trash");
+                return View(request);
             }
+
+            request.UserID = user.ID;
+            await _articleService.AddAsync(request);
 
             return Redirect("~/");
         }
@@ -55,7 +58,7 @@ namespace Blog.Presentation.Controllers
         public async Task<IActionResult> RemoveAsync(Guid id)
         {
 
-            await _service.RemoveAsync(id);
+            await _articleService.RemoveAsync(id);
 
             return Redirect("~/");
         }
