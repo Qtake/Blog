@@ -8,6 +8,7 @@ using Blog.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace Blog.Service.Services
@@ -36,7 +37,8 @@ namespace Blog.Service.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, request.Name)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, request.Name),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, request.Role.Name)
             };
 
             var id = new ClaimsIdentity(
@@ -66,19 +68,21 @@ namespace Blog.Service.Services
             await Authenticate(request);
 
             return true;
-
         }
 
         public async Task<bool> LogIn(AuthorizationModel model)
         {
             UserRequest request = _mapper.Map<UserRequest>(model);
 
-            bool isExist = await _userRepository.Exist(x => x.Email == x.Email && x.Password == request.Password);
+            User? user = await _userRepository.GetAsync(
+                x => x.Name == request.Name && x.Password == request.Password, p => p.Role);
 
-            if (!isExist)
+            if (user is null)
             {
                 return false;
             }
+
+            request.Role = user.Role;
 
             await Authenticate(request);
 
@@ -92,9 +96,9 @@ namespace Blog.Service.Services
 
         public async Task<IQueryable<UserResponse>> GetAllAsync()
         {
-            IQueryable<User> list = await _userRepository.GetAllAsync();
+            IQueryable<User> query = await _userRepository.GetAllAsync(x => x.Role);
 
-            return list.Select(x => _mapper.Map<UserResponse>(x));
+            return query.Select(x => _mapper.Map<UserResponse>(x));
         }
 
         public async Task<UserResponse?> GetAsync(Guid id)

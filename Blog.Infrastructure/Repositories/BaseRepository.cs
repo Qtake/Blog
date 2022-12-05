@@ -21,6 +21,23 @@ namespace Blog.Infrastructure.Repositories
             return Task.FromResult(_entitySet.AsQueryable());
         }
 
+        public Task<IQueryable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            var query = _entitySet.AsQueryable();
+
+            return Task.FromResult(query.Where(predicate));
+        }
+
+        public async Task<IQueryable<TEntity>> GetAllAsync(params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            if (includeProperties.Length == 0)
+            {
+                return await GetAllAsync();
+            }
+
+            return ApplyIncludes(includeProperties);
+        }
+
         public async Task<TEntity?> GetAsync(Guid id)
         {
             return await _entitySet.FindAsync(id);
@@ -29,6 +46,16 @@ namespace Blog.Infrastructure.Repositories
         public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate)
         {
             return await _entitySet.FirstOrDefaultAsync(predicate);
+        }
+
+        public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            if (includeProperties.Length == 0)
+            {
+                return await GetAsync(predicate);
+            }
+
+            return await ApplyIncludes(includeProperties).FirstOrDefaultAsync(predicate);
         }
 
         public async Task<Guid> AddAsync(TEntity entity)
@@ -64,6 +91,13 @@ namespace Blog.Infrastructure.Repositories
         public async Task<bool> Exist(Expression<Func<TEntity, bool>> predicate)
         {
             return await _entitySet.AnyAsync(predicate);
+        }
+
+        private IQueryable<TEntity> ApplyIncludes(params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            var query = _entitySet.AsQueryable();
+
+            return includeProperties.Aggregate(query, (current, property) => current.Include(property));
         }
     }
 }

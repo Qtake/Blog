@@ -13,9 +13,9 @@ namespace Blog.Presentation.Controllers
             _tagService = tagService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            return await GetAll();
         }
 
         public async Task<IActionResult> GetAll()

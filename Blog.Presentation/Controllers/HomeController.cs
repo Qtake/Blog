@@ -20,9 +20,7 @@ namespace Blog.Presentation.Controllers
 
         public async Task<IActionResult> Index()
         {
-            IQueryable<ArticleResponse> articles = await _articleService.GetAllAsync();
-
-            return View(articles.ToList());
+            return await GetAllArticles();
         }
 
         public IActionResult Privacy()
@@ -34,6 +32,13 @@ namespace Blog.Presentation.Controllers
         public IActionResult CreateArticle()
         {
             return View();
+        }
+
+        public async Task<IActionResult> GetAllArticles()
+        {
+            IQueryable<ArticleResponse> query = await _articleService.GetAllAsync();
+
+            return View(query.ToList());
         }
 
         [HttpPost]

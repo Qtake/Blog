@@ -1,4 +1,5 @@
-﻿@using Blog.Service.DTOs;
+﻿@using Blog.Domain.Enums;
+@using Blog.Service.DTOs;
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -8,11 +9,10 @@
 @model IEnumerable<TagResponse>
 
 <div>
-    @if (User.Identity is not null)
+    @if (User.Identity is not null && User.IsInRole(RoleType.Admin.ToString()))
     {
-
+        <p>GKGKGJKDJKHGDJ</p>
     }
-
 
     <ul>
         @foreach (var tag in Model)
@@ -26,6 +26,5 @@
             </li>
         }
     </ul>
-
 
 </div>
