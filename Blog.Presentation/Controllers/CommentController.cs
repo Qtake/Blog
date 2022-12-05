@@ -1,5 +1,6 @@
 ﻿using Blog.Service.DTOs;
 using Blog.Service.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Presentation.Controllers
@@ -7,10 +8,12 @@ namespace Blog.Presentation.Controllers
     public class CommentController : Controller
     {
         private readonly ICommentService _commentService;
+        private readonly IUserService _userService;
 
-        public CommentController(ICommentService commentService)
+        public CommentController(ICommentService commentService, IUserService userService)
         {
             _commentService = commentService;
+            _userService = userService;
         }
 
         public IActionResult Index()
@@ -37,8 +40,15 @@ namespace Blog.Presentation.Controllers
             return View(response);
         }
 
-        public async Task<IActionResult> Add(CommentRequest request)
+        [HttpPost]
+        [Authorize]
+        [Route("{articleId:Guid}")]
+        public async Task<IActionResult> Add(CommentRequest request, Guid articleId)
         {
+            UserResponse user = await GetCurrentUser();
+            request.UserID = user.ID;
+            request.ArticleId = articleId;
+
             await _commentService.AddAsync(request);
 
             return Redirect("~/");
@@ -56,6 +66,14 @@ namespace Blog.Presentation.Controllers
             await _commentService.RemoveAsync(id);
 
             return Redirect("~/");
+        }
+
+        private async Task<UserResponse> GetCurrentUser()
+        {
+            string name = User.Identity!.Name!;
+            UserResponse user = (await _userService.GetByNameAsync(name))!;
+
+            return user;
         }
     }
 }

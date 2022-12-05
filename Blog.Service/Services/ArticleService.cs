@@ -37,6 +37,18 @@ namespace Blog.Service.Services
             return _mapper.Map<ArticleResponse>(entity);
         }
 
+        public async Task<ArticleResponse?> IncludeAsync(Guid id)
+        {
+            Article? entity = await _repository.GetAsync(x => x.ID == id, p => p.User);
+
+            if (entity is null)
+            {
+                return null;
+            }
+
+            return _mapper.Map<ArticleResponse>(entity);
+        }
+
         public async Task<Guid> AddAsync(ArticleRequest request)
         {
             Article entity = _mapper.Map<Article>(request);

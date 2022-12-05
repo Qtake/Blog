@@ -1,13 +1,58 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using Blog.Domain.Enums;
+@using Blog.Service.DTOs;
 @{
 }
 
-@model ArticleResponse
+@model CommentRequest
 
 <div>
-    <p>Model.Name</p>
-    <p>Model.Content</p>
+
+    <p>@ViewBag.Article.Name</p>
+    <p>@ViewBag.Article.Content</p>
+    <p>
+        <button class="btn btn-primary"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseExample"
+                aria-expanded="false"
+                aria-controls="collapseExample">
+            Comments
+        </button>
+    </p>
+    <div class="collapse" id="collapseExample">
+        <div class="card card-body">
+            @*WHAT???*@
+            @if (User.Identity is not null)
+            {
+                <form method="post" asp-controller="Comment" asp-action="Add" asp-route-articleId="@ViewBag.Article.ID">
+                    <label asp-for="Content" class="form-label">@Html.LabelFor(x => x.Content)</label>
+                    <textarea asp-for="Content" class="form-control"></textarea>
+                    <input type="submit" value="Comment" class="btn btn-primary mt-3" />
+                </form>
+            }
+
+            <ul>
+                @foreach (var comment in ViewBag.Comments)
+                {
+                    <li>
+                        <p>@comment.User.Name</p>
+                        <br>
+                        <p>@comment.Content</p>
+
+                        @if (User.Identity is not null)
+                        {
+                            if (User.Identity.Name == ViewBag.Article.User.Name || User.IsInRole(RoleType.Admin.ToString()))
+                            {
+                                <a asp-controller="Comment" asp-action="Remove" class="btn btn-danger mt-3">
+                                    Delete
+                                </a>                                
+                            }
+                        }
+                    </li>
+                }
+            </ul>
+
+        </div>
+    </div>
 
 </div>

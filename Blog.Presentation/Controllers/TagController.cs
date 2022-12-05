@@ -15,11 +15,6 @@ namespace Blog.Presentation.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return await GetAll();
-        }
-
-        public async Task<IActionResult> GetAll()
-        {
             IQueryable<TagResponse> query = await _tagService.GetAllAsync();
 
             return View(query);
@@ -41,7 +36,7 @@ namespace Blog.Presentation.Controllers
         {
             await _tagService.AddAsync(request);
 
-            return Redirect("~/");
+            return Redirect("Index");
         }
 
         public async Task<IActionResult> Update(Guid id, TagRequest request)

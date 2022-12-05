@@ -10,17 +10,25 @@ namespace Blog.Presentation.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IArticleService _articleService;
         private readonly IUserService _userService;
+        private readonly ICommentService _commentService;
 
-        public HomeController(ILogger<HomeController> logger, IArticleService articleService, IUserService userService)
+        public HomeController(
+            ILogger<HomeController> logger,
+            IArticleService articleService,
+            IUserService userService,
+            ICommentService commentService)
         {
             _logger = logger;
             _articleService = articleService;
             _userService = userService;
+            _commentService = commentService;
         }
 
         public async Task<IActionResult> Index()
         {
-            return await GetAllArticles();
+            IQueryable<ArticleResponse> query = await _articleService.GetAllAsync();
+
+            return View(query.ToList());
         }
 
         public IActionResult Privacy()
@@ -34,11 +42,24 @@ namespace Blog.Presentation.Controllers
             return View();
         }
 
-        public async Task<IActionResult> GetAllArticles()
+        [HttpGet]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> ArticleDetails(Guid id)
         {
-            IQueryable<ArticleResponse> query = await _articleService.GetAllAsync();
+            ArticleResponse? response = await _articleService.IncludeAsync(id);
 
-            return View(query.ToList());
+            List<CommentResponse> comments = (await _commentService.IncludeAllAsync())
+                .ToList();
+
+            if (response is null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.Article = response;
+            ViewBag.Comments = comments;
+
+            return View();
         }
 
         [HttpPost]

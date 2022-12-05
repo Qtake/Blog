@@ -4,5 +4,6 @@ namespace Blog.Service.Services.Interfaces
 {
     public interface ICommentService : IBaseService<CommentRequest, CommentResponse>
     {
+        Task<IQueryable<CommentResponse>> IncludeAllAsync();
     }
 }

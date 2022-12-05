@@ -12,17 +12,7 @@
             <li class="border-1">
                 <p>@article.Name</p>
 
-                @if (User.Identity is not null)
-                {
-                    if (User.Identity.Name == article.User.Name || User.IsInRole(RoleType.Admin.ToString()))
-                    {
-                        <a asp-controller="Home" asp-action="RemoveArticle" asp-route-id="@article.ID" class="btn btn-danger mt-3">
-                            Delete
-                        </a>
-                    }
-                }
-
-                <a asp-controller="Home" asp-action="GetArticleDetails" asp-route-id="@article.ID" class="btn btn-info mt-3">
+                <a asp-controller="Home" asp-action="ArticleDetails" asp-route-id="@article.ID" class="btn btn-info mt-3">
                     Details
                 </a>
             </li>

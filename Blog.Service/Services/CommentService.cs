@@ -19,9 +19,16 @@ namespace Blog.Service.Services
 
         public async Task<IQueryable<CommentResponse>> GetAllAsync()
         {
-            IQueryable<Comment> list = await _repository.GetAllAsync();
+            IQueryable<Comment> query = await _repository.GetAllAsync();
 
-            return list.Select(x => _mapper.Map<CommentResponse>(x));
+            return query.Select(x => _mapper.Map<CommentResponse>(x));
+        }
+
+        public async Task<IQueryable<CommentResponse>> IncludeAllAsync()
+        {
+            IQueryable<Comment> query = await _repository.GetAllAsync(x => x.Article, y => y.User);
+
+            return query.Select(x => _mapper.Map<CommentResponse>(x));
         }
 
         public async Task<CommentResponse?> GetAsync(Guid id)
