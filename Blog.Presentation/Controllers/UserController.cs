@@ -7,12 +7,12 @@ namespace Blog.Presentation.Controllers
 {
     public class UserController : Controller
     {
-        private readonly IUserService _service;
+        private readonly IUserService _userService;
         private const string ControllerName = "/User";
 
-        public UserController(IUserService service)
+        public UserController(IUserService userService)
         {
-            _service = service;
+            _userService = userService;
         }
 
         public IActionResult Index()
@@ -38,14 +38,14 @@ namespace Blog.Presentation.Controllers
         {
             if (ModelState.IsValid)
             {
-                bool isRegistered = await _service.Registration(model);
+                bool isRegistered = await _userService.Registration(model);
 
                 if (isRegistered)
                 {
                     return Redirect("~/");
                 }
 
-                ModelState.AddModelError("", "User with that email or Name already exist");
+                ModelState.AddModelError("", "User with that Name or Email already exist");
             }
 
             return View(model);
@@ -57,7 +57,7 @@ namespace Blog.Presentation.Controllers
         {
             if (ModelState.IsValid)
             {
-                bool isLogin = await _service.LogIn(model);
+                bool isLogin = await _userService.LogIn(model);
 
                 if (isLogin)
                 {
@@ -74,7 +74,7 @@ namespace Blog.Presentation.Controllers
         [Authorize]
         public async Task<IActionResult> LogOut()
         {
-            await _service.LogOut();
+            await _userService.LogOut();
 
             return Redirect("~/");
         }

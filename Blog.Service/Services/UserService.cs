@@ -54,9 +54,10 @@ namespace Blog.Service.Services
         {
             UserRequest request = _mapper.Map<UserRequest>(model);
 
-            bool isExist = await _userRepository.Exist(x => x.Name == request.Name && x.Email == request.Email);
+            bool isNameExist = await _userRepository.Exist(x => x.Name == request.Name);
+            bool isEmailExist = await _userRepository.Exist(x => x.Email == request.Email);
 
-            if (isExist)
+            if (isNameExist || isEmailExist)
             {
                 return false;
             }
@@ -135,7 +136,7 @@ namespace Blog.Service.Services
         public async Task<Guid> AddAsync(UserRequest request)
         {
             User entity = _mapper.Map<User>(request);
-            Role role = await _roleRepository.GetAsync(RoleTypeEnum.User);
+            Role role = await _roleRepository.GetAsync(RoleType.User);
             entity.Role = role;
 
             return await _userRepository.AddAsync(entity);

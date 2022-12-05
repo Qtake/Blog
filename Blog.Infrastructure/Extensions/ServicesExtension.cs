@@ -36,8 +36,7 @@ namespace Blog.Infrastructure.Extensions
         public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app)
         {
             var context = app.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<BlogContext>();
-
-            string[] roles = Enum.GetNames(typeof(RoleTypeEnum));
+            string[] roles = Enum.GetNames(typeof(RoleType));
 
             foreach (var role in roles)
             {
@@ -51,6 +50,6 @@ namespace Blog.Infrastructure.Extensions
 
             return app;
         }
-        
+
     }
 }

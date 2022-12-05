@@ -1,6 +1,4 @@
 ﻿using Blog.Domain.Entities;
-using Blog.Domain.EntityConfigs;
-using Blog.Infrastructure.EntityConfigs;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 

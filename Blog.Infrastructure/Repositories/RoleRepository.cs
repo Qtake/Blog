@@ -3,11 +3,6 @@ using Blog.Domain.Enums;
 using Blog.Infrastructure.Contexts;
 using Blog.Service.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Blog.Infrastructure.Repositories
 {
@@ -17,7 +12,7 @@ namespace Blog.Infrastructure.Repositories
         {
         }
 
-        public async Task<Role> GetAsync(RoleTypeEnum role)
+        public async Task<Role> GetAsync(RoleType role)
         {
             IQueryable<Role> query = await GetAllAsync();
             Role entity = await query.FirstAsync(x => x.Name == role.ToString());

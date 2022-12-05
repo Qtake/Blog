@@ -8,21 +8,51 @@
     <ul>
         @foreach (var article in Model)
         {
-            <li>
+            <li class="border-1">
                 <p>@article.Name</p>
                 <p>@article.Content</p>
-
-                @if (User.Identity is not null && User.Identity.Name == article.User.Name)
+                
+                @foreach (var comment in article.Comments)
                 {
+                    <p>@comment</p>
+                }
+
+                @if (User.Identity is not null)
+                {
+@*                    <textarea name="content"></textarea>
+
+                    CommentRequest request = new CommentRequest();
+
                     <a asp-controller="Comment"
-                       asp-action="RemoveComment"
-                       class="btn btn-danger mt-3">
-                        Delete
-                    </a>
+                       asp-action="Add"
+                       asp-route-request=""
+                       class="btn btn-info mt-3">
+                        Comment
+                    </a>*@
+
+                    <form method="post" asp-controller="Comment" asp-action="Add">
+                        <textarea class="form-control"></textarea>
+                        <input type="submit" value="Comment" />
+                    </form>
+                    
+                    if (User.Identity.Name == article.User.Name)
+                    {
+                        <br />
+                        <a asp-controller="Home"
+                           asp-action="RemoveArticle"
+                           asp-route-id="@article.ID"
+                           class="btn btn-danger mt-3">
+                            Delete
+                        </a>
+                    }
                 }
 
             </li>
         }
     </ul>
 </div>
+
+<script>
+
+</script>
 

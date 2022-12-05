@@ -11,10 +11,10 @@ namespace Blog.Presentation.Controllers
         private readonly IArticleService _articleService;
         private readonly IUserService _userService;
 
-        public HomeController(ILogger<HomeController> logger, IArticleService service, IUserService userService)
+        public HomeController(ILogger<HomeController> logger, IArticleService articleService, IUserService userService)
         {
             _logger = logger;
-            _articleService = service;
+            _articleService = articleService;
             _userService = userService;
         }
 
@@ -40,27 +40,36 @@ namespace Blog.Presentation.Controllers
         [Authorize]
         public async Task<IActionResult> CreateArticle(ArticleRequest request)
         {
-            string name = User.Identity!.Name!;
-            UserResponse? user = await _userService.GetByNameAsync(name);
-
-            if (user is null)
-            {
-                ModelState.AddModelError("NotAuthorized", "Trash");
-                return View(request);
-            }
-
+            UserResponse user = await GetCurrentUser();
             request.UserID = user.ID;
+
             await _articleService.AddAsync(request);
 
             return Redirect("~/");
         }
 
-        public async Task<IActionResult> RemoveAsync(Guid id)
+        [Route("{id:Guid}/{request}")]
+        public async Task<IActionResult> UpdateArticle(Guid id, ArticleRequest request)
         {
+            await _articleService.UpdateAsync(id, request);
 
+            return Redirect("~/");
+        }
+
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> RemoveArticle(Guid id)
+        {
             await _articleService.RemoveAsync(id);
 
             return Redirect("~/");
+        }
+
+        private async Task<UserResponse> GetCurrentUser()
+        {
+            string name = User.Identity!.Name!;
+            UserResponse user = (await _userService.GetByNameAsync(name))!;
+
+            return user;
         }
     }
 }
