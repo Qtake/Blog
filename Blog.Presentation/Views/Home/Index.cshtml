@@ -6,6 +6,11 @@
 @model IEnumerable<ArticleResponse>
 
 <div>
+    <div class="input-group">
+      <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+      <button type="button" class="btn btn-outline-primary">search</button>
+    </div>
+
     <ul>
         @foreach (var article in Model)
         {
@@ -19,8 +24,4 @@
         }
     </ul>
 </div>
-
-<script>
-
-</script>
 
