@@ -1,0 +1,17 @@
+﻿@using Blog.Domain.Enums;
+@{
+}
+
+<div>
+    <p>@ViewBag.Tag.Name</p>
+
+    @if (User.Identity is not null && User.IsInRole(RoleType.Admin.ToString()))
+    {
+        <a asp-controller="Tag" asp-action="EditTag" asp-route-id="@ViewBag.Tag.ID" class="btn btn-warning mt-3">
+            Update
+        </a>
+        <a asp-controller="Tag" asp-action="RemoveTag" asp-route-id="@ViewBag.Tag.ID" class="btn btn-danger mt-3">
+            Delete
+        </a>
+    }
+</div>

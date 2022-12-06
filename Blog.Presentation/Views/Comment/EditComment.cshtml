@@ -1,0 +1,14 @@
+﻿@using Blog.Service.DTOs;
+@{
+    string content = ViewBag.Comment.Content;
+}
+
+@model CommentRequest
+
+<div>
+    <form method="post" asp-controller="Comment" asp-action="UpdateComment" asp-route-id="@ViewBag.Comment.ID">
+        <label asp-for="Content" class="form-label">@Html.LabelFor(x => x.Content)</label>
+        <textarea asp-for="@content" class="form-control"></textarea>
+        <input type="submit" value="Comment" class="btn btn-primary mt-3" />
+    </form>
+</div>

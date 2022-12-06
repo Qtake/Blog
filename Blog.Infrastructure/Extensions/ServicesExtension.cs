@@ -48,6 +48,22 @@ namespace Blog.Infrastructure.Extensions
 
             context.SaveChanges();
 
+            //foreach (var user in context.Users)
+            //{
+            //    if (!context.Users.Any(x => x.Name == "Admin1"))
+            //    {
+            //        var admin = new User
+            //        {
+            //            Name = "Admin1",
+            //            Email = "Debik228@gmail.com",
+            //            Password = "123456",
+            //            Role = new Role { Name = RoleType.Admin.ToString() }
+            //        };
+            //    }
+            //}
+
+            //context.SaveChanges();
+
             return app;
         }
 

@@ -6,6 +6,18 @@
 @model CommentRequest
 
 <div>
+    @if (User.Identity is not null)
+    {
+        if (User.Identity.Name == ViewBag.Article.User.Name || User.IsInRole(RoleType.Admin.ToString()))
+        {
+            <a asp-controller="Home" asp-action="EditArticle" asp-route-id="@ViewBag.Article.ID" class="btn btn-warning mt-3">
+                Update
+            </a>
+            <a asp-controller="Home" asp-action="RemoveArticle" asp-route-id="@ViewBag.Article.ID" class="btn btn-danger mt-3">
+                Delete
+            </a>
+        }
+    }
 
     <p>@ViewBag.Article.Name</p>
     <p>@ViewBag.Article.Content</p>
@@ -24,7 +36,7 @@
             @*WHAT???*@
             @if (User.Identity is not null)
             {
-                <form method="post" asp-controller="Comment" asp-action="Add" asp-route-articleId="@ViewBag.Article.ID">
+                <form method="post" asp-controller="Comment" asp-action="CreateComment" asp-route-articleId="@ViewBag.Article.ID">
                     <label asp-for="Content" class="form-label">@Html.LabelFor(x => x.Content)</label>
                     <textarea asp-for="Content" class="form-control"></textarea>
                     <input type="submit" value="Comment" class="btn btn-primary mt-3" />
@@ -32,7 +44,7 @@
             }
 
             <ul>
-                @foreach (var comment in ViewBag.Comments)
+                @foreach (var comment in ViewBag.Article.Comments)
                 {
                     <li>
                         <p>@comment.User.Name</p>
@@ -43,7 +55,10 @@
                         {
                             if (User.Identity.Name == ViewBag.Article.User.Name || User.IsInRole(RoleType.Admin.ToString()))
                             {
-                                <a asp-controller="Comment" asp-action="Remove" class="btn btn-danger mt-3">
+                                <a asp-controller="Comment" asp-action="EditComment" asp-route-id="@comment.ID" class="btn btn-warning mt-3">
+                                    Update
+                                </a>
+                                <a asp-controller="Comment" asp-action="RemoveComment" asp-route-id="@comment.ID" class="btn btn-danger mt-3">
                                     Delete
                                 </a>                                
                             }

@@ -2,6 +2,7 @@
 using Blog.Service.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Blog.Infrastructure.Repositories
 {
@@ -70,8 +71,20 @@ namespace Blog.Infrastructure.Repositories
         public async Task UpdateAsync(Guid id, TEntity entity)
         {
             _context.Entry(entity).State = EntityState.Modified;
-
             await _context.SaveChangesAsync();
+
+            //TEntity? existing = await GetAsync(id);
+
+            //if (existing is null)
+            //{
+            //    return;
+            //}
+
+            //_context.Entry(existing).CurrentValues.SetValues(entity);
+            //await _context.SaveChangesAsync();
+
+            //await RemoveAsync(id);
+            //await AddAsync(entity);
         }
 
         public async Task RemoveAsync(TEntity entity)

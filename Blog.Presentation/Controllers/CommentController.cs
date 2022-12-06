@@ -21,14 +21,8 @@ namespace Blog.Presentation.Controllers
             return View();
         }
 
-        public async Task<IActionResult> GetAll()
-        {
-            IQueryable query = await _commentService.GetAllAsync();
-
-            return View(query);
-        }
-
-        public async Task<IActionResult> Get(Guid id)
+        [Route("[action]/{id}", Name = nameof(EditComment))]
+        public async Task<IActionResult> EditComment(Guid id)
         {
             CommentResponse? response = await _commentService.GetAsync(id);
 
@@ -37,13 +31,15 @@ namespace Blog.Presentation.Controllers
                 return NotFound();
             }
 
-            return View(response);
+            ViewBag.Comment = response;
+
+            return View();
         }
 
         [HttpPost]
         [Authorize]
-        [Route("{articleId:Guid}")]
-        public async Task<IActionResult> Add(CommentRequest request, Guid articleId)
+        [Route("[action]/{articleId}", Name = nameof(CreateComment))]
+        public async Task<IActionResult> CreateComment(CommentRequest request, Guid articleId)
         {
             UserResponse user = await GetCurrentUser();
             request.UserID = user.ID;
@@ -54,14 +50,16 @@ namespace Blog.Presentation.Controllers
             return Redirect("~/");
         }
 
-        public async Task<IActionResult> Update(Guid id, CommentRequest request)
+        [Route("[action]/{id}", Name = nameof(UpdateComment))]
+        public async Task<IActionResult> UpdateComment(Guid id, CommentRequest request)
         {
             await _commentService.UpdateAsync(id, request);
 
             return Redirect("~/");
         }
 
-        public async Task<IActionResult> Remove(Guid id)
+        [Route("[action]/{id}", Name = nameof(RemoveComment))]
+        public async Task<IActionResult> RemoveComment(Guid id)
         {
             await _commentService.RemoveAsync(id);
 

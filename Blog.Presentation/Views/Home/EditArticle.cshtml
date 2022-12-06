@@ -1,0 +1,23 @@
+﻿@using Blog.Service.DTOs;
+@{
+    string name = ViewBag.Article.Name;
+    string content = ViewBag.Article.Content;
+}
+
+@model ArticleRequest
+
+<div>
+    <form method="post" asp-controller="Home" asp-action="UpdateArticle" asp-route-articleId="@ViewBag.Article.ID" asp-route-userid="@ViewBag.Article.UserID">
+        <div asp-validation-summary="All" class="text-danger">
+
+        </div>
+
+        <label asp-for="Name" class="form-label">@Html.LabelFor(x => x.Name)</label>
+        <input asp-for="@name" class="form-control" />
+
+        <label asp-for="Content" class="form-label">@Html.LabelFor(x => x.Content)</label>
+        <textarea asp-for="@content" class="form-control"></textarea>
+
+        <input type="submit" value="Submit" class="btn btn-primary mt-3" />
+    </form>
+</div>

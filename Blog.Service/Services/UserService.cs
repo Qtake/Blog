@@ -170,6 +170,8 @@ namespace Blog.Service.Services
                 return false;
             }
 
+            await _userRepository.RemoveAsync(id);
+
             return true;
         }
     }

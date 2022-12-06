@@ -45,32 +45,31 @@ namespace Blog.Service.Services
 
         public async Task<bool> UpdateAsync(Guid id, TagRequest request)
         {
-            try
-            {
-                Tag entity = _mapper.Map<Tag>(request);
-                await _repository.UpdateAsync(id, entity);
+            bool isExist = await _repository.Exist(x => x.ID == id);
 
-                return true;
-            }
-            catch
+            if (!isExist)
             {
                 return false;
             }
+
+            Tag entity = _mapper.Map<Tag>(request);
+            await _repository.UpdateAsync(id, entity);
+
+            return true;
         }
 
         public async Task<bool> RemoveAsync(Guid id)
         {
-            try
-            {
-                Tag entity = _mapper.Map<Tag>(id);
-                await _repository.RemoveAsync(id);
+            bool isExist = await _repository.Exist(x => x.ID == id);
 
-                return true;
-            }
-            catch
+            if (!isExist)
             {
                 return false;
             }
+
+            await _repository.RemoveAsync(id);
+
+            return true;
         }
     }
 }

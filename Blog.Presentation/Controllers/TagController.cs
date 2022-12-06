@@ -15,12 +15,16 @@ namespace Blog.Presentation.Controllers
 
         public async Task<IActionResult> Index()
         {
-            IQueryable<TagResponse> query = await _tagService.GetAllAsync();
+            IEnumerable<TagResponse> query = (await _tagService.GetAllAsync())
+                .ToList();
 
-            return View(query);
+            ViewBag.Tags = query;
+
+            return View();
         }
 
-        public async Task<IActionResult> Get(Guid id)
+        [Route("[action]/{id}", Name = nameof(TagDetails))]
+        public async Task<IActionResult> TagDetails(Guid id)
         {
             TagResponse? response = await _tagService.GetAsync(id);
 
@@ -29,24 +33,43 @@ namespace Blog.Presentation.Controllers
                 return NotFound();
             }
 
-            return View(response);
+            ViewBag.Tag = response;
+
+            return View();
         }
 
-        public async Task<IActionResult> Add(TagRequest request)
+        [Route("[action]/{id}", Name = nameof(EditTag))]
+        public async Task<IActionResult> EditTag(Guid id)
+        {
+            TagResponse? response = await _tagService.GetAsync(id);
+
+            if (response is null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.Tag = response;
+
+            return View();
+        }
+
+        public async Task<IActionResult> CreateTag(TagRequest request)
         {
             await _tagService.AddAsync(request);
 
             return Redirect("Index");
         }
 
-        public async Task<IActionResult> Update(Guid id, TagRequest request)
+        [Route("[action]/{id}", Name = nameof(UpdateTag))]
+        public async Task<IActionResult> UpdateTag(Guid id, TagRequest request)
         {
             await _tagService.UpdateAsync(id, request);
 
             return Redirect("~/");
         }
 
-        public async Task<IActionResult> Remove(Guid id)
+        [Route("[action]/{id}", Name = nameof(RemoveTag))]
+        public async Task<IActionResult> RemoveTag(Guid id)
         {
             await _tagService.RemoveAsync(id);
 

@@ -10,25 +10,23 @@ namespace Blog.Presentation.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IArticleService _articleService;
         private readonly IUserService _userService;
-        private readonly ICommentService _commentService;
 
         public HomeController(
             ILogger<HomeController> logger,
             IArticleService articleService,
-            IUserService userService,
-            ICommentService commentService)
+            IUserService userService)
         {
             _logger = logger;
             _articleService = articleService;
             _userService = userService;
-            _commentService = commentService;
         }
 
         public async Task<IActionResult> Index()
         {
-            IQueryable<ArticleResponse> query = await _articleService.GetAllAsync();
+            IEnumerable<ArticleResponse> query = (await _articleService.GetAllAsync())
+                .ToList();
 
-            return View(query.ToList());
+            return View(query);
         }
 
         public IActionResult Privacy()
@@ -43,13 +41,10 @@ namespace Blog.Presentation.Controllers
         }
 
         [HttpGet]
-        [Route("{id:Guid}")]
+        [Route("[action]/{id}", Name = nameof(ArticleDetails))]
         public async Task<IActionResult> ArticleDetails(Guid id)
         {
             ArticleResponse? response = await _articleService.IncludeAsync(id);
-
-            List<CommentResponse> comments = (await _commentService.IncludeAllAsync())
-                .ToList();
 
             if (response is null)
             {
@@ -57,7 +52,6 @@ namespace Blog.Presentation.Controllers
             }
 
             ViewBag.Article = response;
-            ViewBag.Comments = comments;
 
             return View();
         }
@@ -74,15 +68,31 @@ namespace Blog.Presentation.Controllers
             return Redirect("~/");
         }
 
-        [Route("{id:Guid}/{request}")]
-        public async Task<IActionResult> UpdateArticle(Guid id, ArticleRequest request)
+        [Route("[action]/{id}", Name = nameof(EditArticle))]
+        public async Task<IActionResult> EditArticle(Guid id)
         {
-            await _articleService.UpdateAsync(id, request);
+            ArticleResponse? response = await _articleService.GetAsync(id);
+
+            if (response is null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.Article = response;
+
+            return View();
+        }
+        
+        [Route("[action]/{articleId}/{userId}", Name = nameof(UpdateArticle))]
+        public async Task<IActionResult> UpdateArticle(Guid articleId, Guid userId, ArticleRequest request)
+        {
+            request.UserID = userId;
+            await _articleService.UpdateAsync(articleId, request);
 
             return Redirect("~/");
         }
 
-        [Route("{id:Guid}")]
+        [Route("[action]/{id}", Name = nameof(RemoveArticle))]
         public async Task<IActionResult> RemoveArticle(Guid id)
         {
             await _articleService.RemoveAsync(id);

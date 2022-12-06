@@ -1,28 +1,28 @@
 ﻿@using Blog.Domain.Enums;
 @using Blog.Service.DTOs;
 @{
-    var request = new TagRequest();
 }
 
-@model IEnumerable<TagResponse>
+@model TagRequest
 
 <div>
     @if (User.Identity is not null && User.IsInRole(RoleType.Admin.ToString()))
     {
-        <form method="post" asp-controller="Tag" asp-action="Add">
-            <label asp-for="@request.Name" class="form-label">@nameof(request.Name)</label>
-            <input asp-for="@request.Name" class="form-control" />
+        <form method="post" asp-controller="Tag" asp-action="CreateTag">
+            <label asp-for="Name" class="form-label">@Html.LabelFor(x => x.Name)</label>
+            <input asp-for="Name" class="form-control" />
             <input type="submit" class="btn btn-primary mt-3" />
         </form>
     }
 
+    <br />
     <ul>
-        @foreach (var tag in Model)
+        @foreach (var tag in ViewBag.Tags)
         {
             <li>
                 <p>@tag.Name</p>
 
-                <a asp-controller="Tag" asp-action="TagDetails" class="btn btn-info" mt-3>Details</a>
+                <a asp-controller="Tag" asp-action="TagDetails" asp-route-id="@tag.ID" class="btn btn-info" mt-3>Details</a>
 
             </li>
         }

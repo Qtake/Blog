@@ -39,7 +39,7 @@ namespace Blog.Service.Services
 
         public async Task<ArticleResponse?> IncludeAsync(Guid id)
         {
-            Article? entity = await _repository.GetAsync(x => x.ID == id, p => p.User);
+            Article? entity = await _repository.GetAsync(x => x.ID == id, p => p.User, o => o.Comments);
 
             if (entity is null)
             {
