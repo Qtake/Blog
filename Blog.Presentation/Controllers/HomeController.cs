@@ -115,7 +115,7 @@ namespace Blog.Presentation.Controllers
 
             return View();
         }
-        
+
         [Route("[action]/{articleId}/{userId}", Name = nameof(UpdateArticle))]
         public async Task<IActionResult> UpdateArticle(Guid articleId, Guid userId, ArticleRequest request)
         {

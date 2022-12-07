@@ -1,5 +1,4 @@
 ﻿using Blog.Domain.Entities;
-using Blog.Domain.Enums;
 
 namespace Blog.Service.DTOs
 {
