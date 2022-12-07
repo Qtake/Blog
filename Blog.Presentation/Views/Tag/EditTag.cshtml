@@ -1,0 +1,15 @@
+﻿@using Blog.Service.DTOs;
+@{
+    string name = ViewBag.Tag.Name;
+}
+
+@model TagRequest
+
+<div>
+    <form method="post" asp-controller="Tag" asp-action="UpdateTag"
+          asp-route-id="@ViewBag.Tag.ID">
+        <label asp-for="Name" class="form-label">@Html.LabelFor(x => x.Name)</label>
+        <input asp-for="@name" class="form-control" />
+        <input type="submit" value="Update" class="btn btn-primary mt-3" />
+    </form>
+</div>

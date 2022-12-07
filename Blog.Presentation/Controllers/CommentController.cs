@@ -50,10 +50,12 @@ namespace Blog.Presentation.Controllers
             return Redirect("~/");
         }
 
-        [Route("[action]/{id}", Name = nameof(UpdateComment))]
-        public async Task<IActionResult> UpdateComment(Guid id, CommentRequest request)
+        [Route("[action]/{commentId}/{UserId}/{articleId}", Name = nameof(UpdateComment))]
+        public async Task<IActionResult> UpdateComment(Guid commentId, Guid userId, Guid articleId, CommentRequest request)
         {
-            await _commentService.UpdateAsync(id, request);
+            request.UserID = userId;
+            request.ArticleId = articleId;
+            await _commentService.UpdateAsync(commentId, request);
 
             return Redirect("~/");
         }

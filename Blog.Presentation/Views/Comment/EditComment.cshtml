@@ -6,7 +6,10 @@
 @model CommentRequest
 
 <div>
-    <form method="post" asp-controller="Comment" asp-action="UpdateComment" asp-route-id="@ViewBag.Comment.ID">
+    <form method="post" asp-controller="Comment" asp-action="UpdateComment"
+          asp-route-commentId="@ViewBag.Comment.ID"
+          asp-route-UserId="@ViewBag.Comment.UserID"
+          asp-route-articleId="@ViewBag.Comment.ArticleId">
         <label asp-for="Content" class="form-label">@Html.LabelFor(x => x.Content)</label>
         <textarea asp-for="@content" class="form-control"></textarea>
         <input type="submit" value="Comment" class="btn btn-primary mt-3" />
