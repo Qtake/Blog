@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Blog.Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Blog.Service.DTOs
 {
@@ -8,5 +9,7 @@ namespace Blog.Service.DTOs
         public string Name { get; set; } = null!;
         public string Content { get; set; } = null!;
         public Guid UserID { get; set; }
+
+        public ICollection<Tag> Tags { get; set; } = null!;
     }
 }

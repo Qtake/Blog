@@ -1,4 +1,6 @@
-﻿using Blog.Service.DTOs;
+﻿using Blog.Domain.Entities;
+using Blog.Service.DTOs;
+using Blog.Service.Models;
 using Blog.Service.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,15 +12,18 @@ namespace Blog.Presentation.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IArticleService _articleService;
         private readonly IUserService _userService;
+        private readonly ITagService _tagService;
 
         public HomeController(
             ILogger<HomeController> logger,
             IArticleService articleService,
-            IUserService userService)
+            IUserService userService,
+            ITagService tagService)
         {
             _logger = logger;
             _articleService = articleService;
             _userService = userService;
+            _tagService = tagService;
         }
 
         public async Task<IActionResult> Index()
@@ -35,9 +40,21 @@ namespace Blog.Presentation.Controllers
         }
 
         [HttpGet]
-        public IActionResult CreateArticle()
+        public async Task<IActionResult> CreateArticle()
         {
+            IEnumerable<TagResponse> tags = (await _tagService.GetAllAsync())
+                .ToList();
+
+            ViewBag.Tags = tags;
+
             return View();
+        }
+
+        public async Task<IActionResult> SearchByTag(string line)
+        {
+            IEnumerable<ArticleResponse> query = await _articleService.SearchByTag(line);
+
+            return View("Index", query);
         }
 
         [HttpGet]
@@ -58,8 +75,24 @@ namespace Blog.Presentation.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateArticle(ArticleRequest request)
+        public async Task<IActionResult> CreateArticle(ArticleCreationModel model)
         {
+            var request = new ArticleRequest
+            {
+                Name = model.Name,
+                Content = model.Content,
+                Tags = new HashSet<Tag>()
+            };
+
+            if (model.TagLine is not null)
+            {
+                foreach (var name in model.TagLine)
+                {
+                    Tag? obj = await _tagService.GetByNameAsync(name);
+                    request.Tags.Add(obj!);
+                }
+            }
+
             UserResponse user = await GetCurrentUser();
             request.UserID = user.ID;
 

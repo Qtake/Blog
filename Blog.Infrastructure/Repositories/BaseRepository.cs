@@ -2,7 +2,6 @@
 using Blog.Service.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Blog.Infrastructure.Repositories
 {
@@ -70,21 +69,11 @@ namespace Blog.Infrastructure.Repositories
 
         public async Task UpdateAsync(Guid id, TEntity entity)
         {
+            entity.ID = id;
+
             _context.Entry(entity).State = EntityState.Modified;
+
             await _context.SaveChangesAsync();
-
-            //TEntity? existing = await GetAsync(id);
-
-            //if (existing is null)
-            //{
-            //    return;
-            //}
-
-            //_context.Entry(existing).CurrentValues.SetValues(entity);
-            //await _context.SaveChangesAsync();
-
-            //await RemoveAsync(id);
-            //await AddAsync(entity);
         }
 
         public async Task RemoveAsync(TEntity entity)
@@ -97,6 +86,8 @@ namespace Blog.Infrastructure.Repositories
         public async Task RemoveAsync(Guid id)
         {
             var entity = new TEntity() { ID = id };
+
+            _context.Attach(entity);
 
             await RemoveAsync(entity);
         }

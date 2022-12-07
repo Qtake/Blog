@@ -64,6 +64,10 @@ namespace Blog.Service.Services
                 return false;
             }
 
+            Role role = await _roleRepository.GetAsync(RoleType.User);
+            request.RoleID = role.ID;
+            request.Role = role;
+
             await AddAsync(request);
             await Authenticate(request);
 
@@ -140,8 +144,6 @@ namespace Blog.Service.Services
         public async Task<Guid> AddAsync(UserRequest request)
         {
             User entity = _mapper.Map<User>(request);
-            Role role = await _roleRepository.GetAsync(RoleType.User);
-            entity.Role = role;
 
             return await _userRepository.AddAsync(entity);
         }

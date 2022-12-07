@@ -1,5 +1,4 @@
 ﻿using Blog.Domain.Entities;
-using Blog.Domain.Enums;
 
 namespace Blog.Service.DTOs
 {
@@ -9,6 +8,7 @@ namespace Blog.Service.DTOs
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
         public string RepeatedPassword { get; set; } = null!;
+        public Guid RoleID { get; set; }
         public Role Role { get; set; } = null!;
     }
 }

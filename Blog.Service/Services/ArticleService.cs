@@ -20,9 +20,9 @@ namespace Blog.Service.Services
 
         public async Task<IQueryable<ArticleResponse>> GetAllAsync()
         {
-            IQueryable<Article> list = (await _repository.GetAllAsync()).Include(x => x.User);
+            IQueryable<Article> query = (await _repository.GetAllAsync()).Include(x => x.User);
 
-            return list.Select(x => _mapper.Map<ArticleResponse>(x));
+            return query.Select(x => _mapper.Map<ArticleResponse>(x));
         }
 
         public async Task<ArticleResponse?> GetAsync(Guid id)
@@ -39,7 +39,7 @@ namespace Blog.Service.Services
 
         public async Task<ArticleResponse?> IncludeAsync(Guid id)
         {
-            Article? entity = await _repository.GetAsync(x => x.ID == id, p => p.User, o => o.Comments);
+            Article? entity = await _repository.GetAsync(x => x.ID == id, u => u.User, t => t.Tags, o => o.Comments);
 
             if (entity is null)
             {
@@ -83,6 +83,35 @@ namespace Blog.Service.Services
             await _repository.RemoveAsync(id);
 
             return true;
+        }
+
+        private async Task<IQueryable<ArticleResponse>> FindAll()
+        {
+            IQueryable<Article> query = await _repository.GetAllAsync(u => u.User, t => t.Tags);
+
+            return query.Select(x => _mapper.Map<ArticleResponse>(x));
+        }
+
+        public async Task<IEnumerable<ArticleResponse>> SearchByTag(string inputLine)
+        {
+            IEnumerable<ArticleResponse> articles = (await FindAll()).ToList();
+
+            if (string.IsNullOrEmpty(inputLine))
+            {
+                return articles.Select(x => _mapper.Map<ArticleResponse>(x));
+            }
+
+            string[] words = inputLine.Split(' ');
+            var query = articles;
+
+            foreach (var word in words)
+            {
+                query = articles
+                    .Where(article => article.Tags
+                    .Any(tag => tag.Name == word));
+            }
+
+            return query.ToList();
         }
     }
 }

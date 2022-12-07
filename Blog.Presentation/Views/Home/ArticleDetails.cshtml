@@ -19,6 +19,12 @@
         }
     }
 
+    <p>Tags:</p>
+    @foreach (var tag in ViewBag.Article.Tags)
+    {
+        <p>@tag.Name</p>
+    }
+
     <p>@ViewBag.Article.Name</p>
     <p>@ViewBag.Article.Content</p>
     <p>
@@ -33,8 +39,7 @@
     </p>
     <div class="collapse" id="collapseExample">
         <div class="card card-body">
-            @*WHAT???*@
-            @if (User.Identity is not null)
+            @if (User.Identity is not null && User.Identity.IsAuthenticated)
             {
                 <form method="post" asp-controller="Comment" asp-action="CreateComment" asp-route-articleId="@ViewBag.Article.ID">
                     <label asp-for="Content" class="form-label">@Html.LabelFor(x => x.Content)</label>
@@ -51,7 +56,7 @@
                         <br>
                         <p>@comment.Content</p>
 
-                        @if (User.Identity is not null)
+                        @if (User.Identity is not null && User.Identity.IsAuthenticated)
                         {
                             if (User.Identity.Name == ViewBag.Article.User.Name || User.IsInRole(RoleType.Admin.ToString()))
                             {

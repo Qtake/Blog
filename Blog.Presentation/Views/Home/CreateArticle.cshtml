@@ -1,8 +1,9 @@
-﻿@using Blog.Service.DTOs;
+﻿@using Blog.Service.Models;
 @{
+    string inputLine = string.Empty;
 }
 
-@model ArticleRequest
+@model ArticleCreationModel
 
 <form method="post" asp-controller="Home" asp-action="CreateArticle">
     <div asp-validation-summary="All" class="text-danger">
@@ -14,6 +15,13 @@
 
     <label asp-for="Content" class="form-label">@Html.LabelFor(x => x.Content)</label>
     <textarea asp-for="Content" class="form-control"></textarea>
+
+    <select multiple asp-for="TagLine">
+        @foreach (var tag in ViewBag.Tags)
+        {
+            <option>@tag.Name</option>
+        }
+    </select>
 
     <input type="submit" value="Submit" class="btn btn-primary mt-3" />
 </form>

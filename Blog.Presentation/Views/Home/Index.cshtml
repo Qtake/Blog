@@ -1,15 +1,21 @@
 ﻿@using Blog.Domain.Enums;
 @using Blog.Service.DTOs
 @{
+    string line = string.Empty;
 }
 
 @model IEnumerable<ArticleResponse>
 
 <div>
-    <div class="input-group">
-      <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-      <button type="button" class="btn btn-outline-primary">search</button>
-    </div>
+@*    <div class="input-group">
+        
+        <a class="btn btn-outline-primary" asp-controller="Home" asp-action="SearchByTag" asp-route-line="@line" onclick="getVal()">search</a>
+    </div>*@
+
+    <form method="post" asp-controller="Home" asp-action="SearchByTag" class="input-group">
+        <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" asp-for="@line"/>
+        <input type="submit" value="Search" class="btn btn-outline-primary"/>
+    </form>
 
     <ul>
         @foreach (var article in Model)
@@ -24,4 +30,3 @@
         }
     </ul>
 </div>
-

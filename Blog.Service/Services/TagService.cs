@@ -19,9 +19,9 @@ namespace Blog.Service.Services
 
         public async Task<IQueryable<TagResponse>> GetAllAsync()
         {
-            IQueryable<Tag> list = await _repository.GetAllAsync();
+            IQueryable<Tag> query = await _repository.GetAllAsync();
 
-            return list.Select(x => _mapper.Map<TagResponse>(x));
+            return query.Select(x => _mapper.Map<TagResponse>(x));
         }
 
         public async Task<TagResponse?> GetAsync(Guid id)
@@ -70,6 +70,25 @@ namespace Blog.Service.Services
             await _repository.RemoveAsync(id);
 
             return true;
+        }
+
+        public async Task<bool> ExistByName(string name)
+        {
+            bool isExist = await _repository.Exist(x => x.Name == name);
+
+            return isExist;
+        }
+
+        public async Task<Tag?> GetByNameAsync(string name)
+        {
+            Tag? entity = await _repository.GetAsync(x => x.Name == name);
+
+            if (entity is null)
+            {
+                return null;
+            }
+
+            return entity;
         }
     }
 }
